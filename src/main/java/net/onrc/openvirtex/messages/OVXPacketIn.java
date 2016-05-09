@@ -143,7 +143,6 @@ public class OVXPacketIn extends OFPacketIn implements Virtualizable {
 
                } catch (NetworkMappingException | DroppedMessageException e1) {
     				this.log.error("We can't find network or other error");
-    				e1.printStackTrace();
     				return ;
     			}catch(NullPointerException e2){
     				e2.printStackTrace();
