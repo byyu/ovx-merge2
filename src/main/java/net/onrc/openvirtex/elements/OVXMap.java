@@ -31,6 +31,9 @@ import net.onrc.openvirtex.elements.address.OVXIPAddress;
 import net.onrc.openvirtex.elements.address.PhysicalIPAddress;
 import net.onrc.openvirtex.elements.datapath.OVXSwitch;
 import net.onrc.openvirtex.elements.datapath.PhysicalSwitch;
+//byyu
+import net.onrc.openvirtex.elements.host.Host;
+
 import net.onrc.openvirtex.elements.link.OVXLink;
 import net.onrc.openvirtex.elements.link.PhysicalLink;
 import net.onrc.openvirtex.elements.network.OVXNetwork;
@@ -70,6 +73,9 @@ public final class OVXMap implements Mappable {
     private RadixTree<ConcurrentHashMap<Integer, PhysicalIPAddress>> virtualIPMap;
     private RadixTree<Integer> macMap;
 
+    //byyu
+    private ConcurrentHashMap<MACAddress, Host> macHostMap;
+    
     /**
      * Creates a new map instance, by initializing all mapping data structures.
      */
@@ -87,6 +93,9 @@ public final class OVXMap implements Mappable {
                 new DefaultCharArrayNodeFactory());
         this.macMap = new ConcurrentRadixTree<Integer>(
                 new DefaultCharArrayNodeFactory());
+        
+        //byyu
+        this.macHostMap = new ConcurrentHashMap<MACAddress, Host>();
     }
 
     /**
@@ -390,6 +399,12 @@ public final class OVXMap implements Mappable {
         }
         rlist.add(route);
     }
+    
+    //byyu
+    public void addMacHost(MACAddress mac, Host host){
+    	macHostMap.put(mac, host);
+    	log.debug("Host Mac map addition : Host {}, MACAddress {}",host.toString(),mac.toString());
+    }
 
     // Access objects from dictionary given the key
 
@@ -543,6 +558,11 @@ public final class OVXMap implements Mappable {
                     + " not mapped to any values");
         }
         return macint;
+    }
+    
+    //byyu
+    public Host getHostbyMAC(MACAddress mac){
+    	return macHostMap.get(mac);
     }
 
     @Override
@@ -750,6 +770,11 @@ public final class OVXMap implements Mappable {
         this.physicalSwitchMap.remove(physicalSwitch);
     }
 
+    //byyu
+    public void removeMacHost(MACAddress mac){
+    	macHostMap.remove(mac);
+    }
+    
     // Below: helper functions needed to avoid using error exception for flow control
 
     /**
